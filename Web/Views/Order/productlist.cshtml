@@ -299,23 +299,19 @@
                 var span = $(this);
                 var itemCode = $(this).siblings("span[name]").html();
                 var parentCode = $(this).parent().parent().siblings("tr.treegrid-1").children().children("span[name]").html();
-            
-
+                console.log($(this).parent().parent());
+                var click = true;
                 for (var i = 0; i < expanderArray.length; i++) {
 
-                    if (expanderArray[i] != itemCode) {
-                        $(span).click();  //初始化是张开的， 如果点击了就点多下不张开
+                    if (expanderArray[i] == itemCode) {
+                        click = false;  //初始化是张开的， 如果点击了就点多下收缩
                         break;
                     }
-
                 }
 
-                //if (parentCode == undefined) {
-                //    $(this).parent().parent().siblings("tr.treegrid-1").children().children("span.treegrid-expander glyphicon-plus glyphicon").click();
-
-                //}
-
-                //console.log(ff);
+                if (click)
+                    $(span).click();
+     
                 resetClick($(this));
             });
         }
@@ -329,7 +325,7 @@
                 $(this).click(function () { });
                 if (isFirst)
                     $(this).click();
-              
+
                 resetClick($(this));
             });
 
