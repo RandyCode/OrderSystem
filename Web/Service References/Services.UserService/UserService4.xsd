@@ -106,6 +106,21 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="LoadProductSorts">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="cipher" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="parentCode" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LoadProductSortsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/OrderManager.Model.DTO" minOccurs="0" name="LoadProductSortsResult" nillable="true" type="q6:ArrayOfOM_ProductInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="GetCurrentUserMessageBoard">
     <xs:complexType>
       <xs:sequence>
@@ -117,7 +132,7 @@
   <xs:element name="GetCurrentUserMessageBoardResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/OrderManager.Model.Models" minOccurs="0" name="GetCurrentUserMessageBoardResult" nillable="true" type="q6:ArrayOfOM_MessageBoard" />
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/OrderManager.Model.Models" minOccurs="0" name="GetCurrentUserMessageBoardResult" nillable="true" type="q7:ArrayOfOM_MessageBoard" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -132,7 +147,7 @@
   <xs:element name="GetMessageBoardModelResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/OrderManager.Model.Models" minOccurs="0" name="GetMessageBoardModelResult" nillable="true" type="q7:OM_MessageBoard" />
+        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/OrderManager.Model.Models" minOccurs="0" name="GetMessageBoardModelResult" nillable="true" type="q8:OM_MessageBoard" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -147,7 +162,7 @@
   <xs:element name="GetOrderListResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/OrderManager.Model.Models" minOccurs="0" name="GetOrderListResult" nillable="true" type="q8:ArrayOfOM_Order" />
+        <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/OrderManager.Model.Models" minOccurs="0" name="GetOrderListResult" nillable="true" type="q9:ArrayOfOM_Order" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -155,7 +170,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="cipher" nillable="true" type="xs:string" />
-        <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/OrderManager.Model.DTO" minOccurs="0" name="obj" nillable="true" type="q9:OM_SalesOrderDataObject" />
+        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/OrderManager.Model.DTO" minOccurs="0" name="obj" nillable="true" type="q10:OM_SalesOrderDataObject" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -170,7 +185,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="cipher" nillable="true" type="xs:string" />
-        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/OrderManager.Model.DTO" minOccurs="0" name="obj" nillable="true" type="q10:OM_SalesOrderDataObject" />
+        <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/OrderManager.Model.DTO" minOccurs="0" name="obj" nillable="true" type="q11:OM_SalesOrderDataObject" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -190,7 +205,7 @@
   <xs:element name="GetSalesOrderAndDetailResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/OrderManager.Model.DTO" minOccurs="0" name="GetSalesOrderAndDetailResult" nillable="true" type="q11:OM_SalesOrderDataObject" />
+        <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/OrderManager.Model.DTO" minOccurs="0" name="GetSalesOrderAndDetailResult" nillable="true" type="q12:OM_SalesOrderDataObject" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -205,7 +220,7 @@
   <xs:element name="GetCurrentSalesOrderListResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/OrderManager.Model.Models" minOccurs="0" name="GetCurrentSalesOrderListResult" nillable="true" type="q12:ArrayOfOM_Order" />
+        <xs:element xmlns:q13="http://schemas.datacontract.org/2004/07/OrderManager.Model.Models" minOccurs="0" name="GetCurrentSalesOrderListResult" nillable="true" type="q13:ArrayOfOM_Order" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -221,7 +236,7 @@
   <xs:element name="GetCurrentProducePriceListResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q13="http://schemas.datacontract.org/2004/07/OrderManager.Model.Models" minOccurs="0" name="GetCurrentProducePriceListResult" nillable="true" type="q13:ArrayOfOM_ProductPrice" />
+        <xs:element xmlns:q14="http://schemas.datacontract.org/2004/07/OrderManager.Model.Models" minOccurs="0" name="GetCurrentProducePriceListResult" nillable="true" type="q14:ArrayOfOM_ProductPrice" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -236,7 +251,7 @@
   <xs:element name="GetCurrentUserByCardCodeResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q14="http://schemas.datacontract.org/2004/07/OrderManager.Model.Models" minOccurs="0" name="GetCurrentUserByCardCodeResult" nillable="true" type="q14:ArrayOfOM_User" />
+        <xs:element xmlns:q15="http://schemas.datacontract.org/2004/07/OrderManager.Model.Models" minOccurs="0" name="GetCurrentUserByCardCodeResult" nillable="true" type="q15:ArrayOfOM_User" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -247,13 +262,15 @@
         <xs:element minOccurs="0" name="CardCode" nillable="true" type="xs:string" />
         <xs:element minOccurs="0" name="searchKey" nillable="true" type="xs:string" />
         <xs:element minOccurs="0" name="pageIndex" type="xs:int" />
+        <xs:element minOccurs="0" name="pageSize" type="xs:int" />
+        <xs:element minOccurs="0" name="isLoad" type="xs:boolean" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="GetProductListResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q15="http://schemas.datacontract.org/2004/07/OrderManager.Model.DTO" minOccurs="0" name="GetProductListResult" nillable="true" type="q15:ArrayOfOM_ProductInfo" />
+        <xs:element xmlns:q16="http://schemas.datacontract.org/2004/07/OrderManager.Model.DTO" minOccurs="0" name="GetProductListResult" nillable="true" type="q16:ArrayOfOM_ProductInfo" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -297,7 +314,7 @@
   <xs:element name="UpdateSalesOrderStatusByToSAPResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q16="http://schemas.datacontract.org/2004/07/OrderManager.Model.DTO" minOccurs="0" name="UpdateSalesOrderStatusByToSAPResult" nillable="true" type="q16:OM_B1InfomationDTO" />
+        <xs:element xmlns:q17="http://schemas.datacontract.org/2004/07/OrderManager.Model.DTO" minOccurs="0" name="UpdateSalesOrderStatusByToSAPResult" nillable="true" type="q17:OM_B1InfomationDTO" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

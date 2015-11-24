@@ -231,8 +231,71 @@ namespace OrderManager.Service
             return userManager.GetCurrentUserByCardCode(userGuid);
         }
 
+        //加载树 -old
+        //public IList<OM_ProductInfo> LoadProductSorts(string cipher, int pageIndex, string parentCode = null)
+        //{
+        //    int _currentProductListCount = 0;
+        //    PageListParameter<OM_Product, string> parameter = new PageListParameter<OM_Product, string>();
+        //    parameter.whereLambda = s => ((s.ItemCode.Contains(searchKey.ToUpper()) || s.ItemName.Contains(searchKey))
+        //                                    && (s.ParentId == null || s.ParentId == s.ItemCode) & s.IsDel == false);
 
-        public IList<OM_ProductInfo> GetProductList(string cipher, string CardCode, string searchKey, int pageIndex)
+        //    if (!string.IsNullOrWhiteSpace(searchKey))
+        //    {
+        //        parameter.whereLambda = s => ((s.ItemCode.Contains(searchKey.ToUpper()) || s.ItemName.Contains(searchKey)) & s.IsDel == false);
+        //    }
+
+        //    parameter.pageIndex = pageIndex;
+        //    parameter.orderByLambda = s => s.ItemCode;
+        //    parameter.pageSize = 100;
+
+        //    IList<OM_ProductInfo> result = new List<OM_ProductInfo>();
+        //    var productList = orderManger.GetProductList(parameter, out _currentProductListCount);
+
+        //    var user = userManager.GetUser(s => s.Account == CardCode);
+
+        //    //减少递归读取数据库次数 
+        //    if (productList != null || productList.Count > 0)
+        //        StaticResource.UserProductPrices = orderManger.GetProducePricetList(s => user.Guid.Trim().ToLower() == s.User_Guid.Trim().ToLower());
+
+        //    //父节点
+        //    foreach (var item in productList)
+        //    {
+        //        string price = null;
+
+        //        List<OM_ProductInfo> children = orderManger.GetChildProductRecursion(item.CardCode, item.ItemCode, user.Guid);
+
+        //        // 说明是最终产品节点
+        //        if (children == null || children.Count == 0)
+        //        {
+        //            var exist = StaticResource.UserProductPrices.Find(s => s.Product_ItemCode == item.ItemCode);
+        //            if (exist != null)
+        //                price = exist.Price.ToString("0.00");
+        //        }
+
+        //        OM_ProductInfo product = new OM_ProductInfo();
+        //        product.ItemName = item.ItemName;
+        //        product.ItemCode = item.ItemCode;
+        //        product.Price = price;
+
+        //        product.ChildNode = children;
+        //        result.Add(product);
+        //    }
+
+        //    return result;
+
+        //}
+
+
+
+        /// <summary>
+        /// //动态递归查找产品
+        /// </summary>
+        /// <param name="cipher"></param>
+        /// <param name="CardCode"></param>
+        /// <param name="searchKey">默认传父节点</param>
+        /// <param name="pageIndex"></param>
+        /// <returns></returns>
+        public IList<OM_ProductInfo> GetProductList(string cipher, string CardCode, string searchKey, int pageIndex,int pageSize,bool isLoad=false)
         {
             int _currentProductListCount = 0;
             PageListParameter<OM_Product, string> parameter = new PageListParameter<OM_Product, string>();
@@ -244,9 +307,12 @@ namespace OrderManager.Service
                 parameter.whereLambda = s => ((s.ItemCode.Contains(searchKey.ToUpper()) || s.ItemName.Contains(searchKey)) & s.IsDel == false);
             }
 
+            if(isLoad)
+                parameter.whereLambda = s => ((s.ParentId == searchKey & s.IsDel == false & s.ItemCode != searchKey));
+
             parameter.pageIndex = pageIndex;
             parameter.orderByLambda = s => s.ItemCode;
-            parameter.pageSize = 100;
+            parameter.pageSize = pageSize;
 
             IList<OM_ProductInfo> result = new List<OM_ProductInfo>();
             var productList = orderManger.GetProductList(parameter, out _currentProductListCount);
@@ -254,24 +320,30 @@ namespace OrderManager.Service
             var user = userManager.GetUser(s => s.Account == CardCode);
 
             //减少递归读取数据库次数 
-            if (productList != null || productList.Count > 0)
+            if ((productList != null || productList.Count > 0) && StaticResource.UserProductPrices.FirstOrDefault(s => user.Guid.Trim().ToLower() == s.User_Guid.Trim().ToLower()) == null)
                 StaticResource.UserProductPrices = orderManger.GetProducePricetList(s => user.Guid.Trim().ToLower() == s.User_Guid.Trim().ToLower());
 
+            //父节点
             foreach (var item in productList)
             {
                 string price = null;
+                List<OM_ProductInfo> children = new List<OM_ProductInfo>();
+                OM_ProductInfo product = new OM_ProductInfo();
 
-                List<OM_ProductInfo> children = orderManger.GetChildProductRecursion(item.CardCode, item.ItemCode, user.Guid);
-
+                product.HasChildNode = orderManger.HasChildProduct(item.CardCode, item.ItemCode);
+                
                 // 说明是最终产品节点
-                if (children == null || children.Count == 0)
+                if (product.HasChildNode == false)
                 {
-                    // orderManger.GetCurrentProducePriceList(item.ItemCode, user.Guid).Select(a => a.Price.ToString("0.00")).FirstOrDefault();
                     var exist = StaticResource.UserProductPrices.Find(s => s.Product_ItemCode == item.ItemCode);
                     if (exist != null)
                         price = exist.Price.ToString("0.00");
                 }
-                OM_ProductInfo product = new OM_ProductInfo();
+                else
+                {
+                    children.Add(new OM_ProductInfo { ItemCode = "", HasChildNode = false, ItemName = "", Price = "" });
+                }
+
                 product.ItemName = item.ItemName;
                 product.ItemCode = item.ItemCode;
                 product.Price = price;
@@ -347,6 +419,13 @@ namespace OrderManager.Service
 
         #endregion
 
+
+
+        public IList<OM_ProductInfo> LoadProductSorts(string cipher, string parentCode )
+        {
+ 
+            return null;
+        }
     }
 }
 

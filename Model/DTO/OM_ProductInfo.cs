@@ -24,6 +24,9 @@ namespace OrderManager.Model.DTO
         [DataMember]
         public string Price { get; set; }
 
+        [DataMember]
+        public bool HasChildNode { get; set; }
+
     }
 
 

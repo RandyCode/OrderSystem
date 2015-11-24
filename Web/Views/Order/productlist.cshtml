@@ -10,6 +10,7 @@
 @section Message{
     <div class="box-header">
         <div class="input-group">
+            <input type="hidden" id="isSearch" value="false" />
             <input type="text" name="key" id="searchKey" class="form-control input-sm pull-right" style="width: 150px;" placeholder="搜索物料" value="@ViewBag.Key ">
             <div class="input-group-btn">
                 <button class="btn btn-sm btn-default" id="search"><i class="glyphicon glyphicon-search"></i></button>
@@ -89,13 +90,17 @@
 @section buttons{
     <button type="button" class="btn btn-primary" data-dismiss="modal" id="comfirm_code">确定</button>
     <button type="button" class="btn btn-default" data-dismiss="modal" id="cancel_code">取消</button>
-
+    @*<script src="~/Js/utility/jquery.min.js"></script>*@
     <script>
         var itemcode;
         var itemname;
         var itemprice;
         var currentPage;
+        var productArray = new Array();
+        var expanderArray = new Array();
+
         $(function () {
+
             $('.tree').treegrid();
             //tr click
             $("#productlist_table tr").each(function () {
@@ -105,6 +110,9 @@
             //取消
             $("#cancel_code").click(function () { $("#itemprice").val(''); $("#itemcode").val(''); $("#itemname").val(''); });
             $("#search").click(function () {
+                $("#isSearch").val("true");
+                productArray = new Array();
+                expanderArray = new Array();
                 getdata(0);
             });
 
@@ -125,17 +133,17 @@
             });
 
             var model = @Html.Raw(ServiceStack.Text.JsonSerializer.SerializeToString(Model))
-            //debugger;
-            //console.log(model);
+
             addProductRow(model);
 
         })
 
 
         function getdata(pageIndex) {
+
             var key = "key=" + $("#searchKey").val();
             var pageindex = "pageIndex=" + pageIndex;
-            getAsynData("productList", key + "&" + pageindex, function (json) {
+            getAsynData("productList", key + "&" + pageindex + "&" + isSearch, function (json) {
                 clearTableTr();
                 addProductRow(json.Data);
             });
@@ -147,30 +155,31 @@
             }
             var nextNodenum = "";
             var childRow = "";
-            var nodesResult="";
+            var nodesResult = "";
             var childNode = "";
+            var nameValue = parseInt(parentNodeNum) + 1;
             for (var i = 0; i < root.length; i++) {
                 if (root[i].ChildNode == "undefined" || root[i].ChildNode == null || root[i].ChildNode == 0) {
 
-                    nextNodenum = parentNodeNum + 100;
+                    nextNodenum = parseInt(parentNodeNum) + 100;
                 }
                 else {
 
-                    nextNodenum = parentNodeNum + 1 + i;
+                    nextNodenum = parseInt(parentNodeNum) + 1 + i;
                 }
                 var price = root[i].Price == undefined ? "" : root[i].Price;
                 var price1 = root[i].CustomerPrice == undefined ? "" : root[i].CustomerPrice;
                 var price2 = root[i].InnerPrice == undefined ? "" : root[i].InnerPrice;
 
-                var row = "<tr class='treegrid-" + nextNodenum + " treegrid-parent-" + parentNodeNum + "'>";
-                row += "<td>" + root[i].ItemCode + "</td><td style='font-size:small;'style='width:60%'>" + root[i].ItemName + "</td><td>" + price + "</td>";
+                var row = "<tr class='treegrid-" + nextNodenum + " treegrid-parent-" + parentNodeNum + "' id='" + nextNodenum + "'>";
+                row += "<td><span name='" + nameValue + "' class='itemcode'>" + root[i].ItemCode + "</span></td><td style='font-size:small;'style='width:60%'>" + root[i].ItemName + "</td><td>" + price + "</td>";
                 row += "</tr>";
                 childRow += row;
                 if (root[i].ChildNode == "undefined" || root[i].ChildNode == null || root.ChildNode == 0) {
                     continue;
                 }
                 else {
-                    childRow+=addRecursionChild(root[i].ChildNode, nextNodenum);
+                    childRow += addRecursionChild(root[i].ChildNode, nextNodenum);
                 }
             }
             return childRow;
@@ -194,8 +203,8 @@
                     var price2 = data[i].InnerPrice == undefined ? "" : data[i].CustomerPrice;
 
                     trs += "<tr><td colspan='3' style='padding:0;margin:0;'><table class='" + istree + " table-hover table' role='grid' style='margin-bottom: 0;padding:0;'>";
-                    trs += "<tr class='" + cls + "' >";
-                    trs += "<td>" + data[i].ItemCode + "</td><td style='font-size:small;width:60%'>" + data[i].ItemName + "</td><td>" + price + "</td>";
+                    trs += "<tr class='" + cls + "'>";
+                    trs += "<td><span  name='1' class='itemcode'>" + data[i].ItemCode + "</span></td><td style='font-size:small;width:60%'>" + data[i].ItemName + "</td><td>" + price + "</td>";
                     trs += "</tr>";
                     trs += addRecursionChild(data[i].ChildNode, 1);
                     trs += '</table></td></tr>';
@@ -212,13 +221,139 @@
             });
 
             //收缩tree node
-            shrinkNodes();
+            shrinkNodes(true);
         }
 
-        function shrinkNodes() {
-            $(".treegrid-expander").each(function () {
-                $(this).click();
+
+        function resetClick(element) {
+            //重置展开事件
+            $(element).click(function () {
+
+                var itemCode = $(element).siblings("span[name]").html();
+
+                var key = "itemCode=" + itemCode;
+                var currentNode = $(this).siblings("span[name]").attr("name");
+
+                var wontClick = false;
+                for (var i = 0; i < productArray.length; i++) {
+                    if (productArray[i] == itemCode) {
+                        wontClick = true;
+                        break;
+                    }
+
+                }
+                var tr = $(this).parent().parent();
+
+
+                var parentCode = null;
+                if (currentNode != 1) {
+                    parentCode = tr.siblings("tr.treegrid-1").children().children("span[name]").html()
+                }
+                $(this).parent()
+                //记录是否点击展开  itemcode, 1/2/3
+                addOrRemoveElementFromArray(itemCode, parentCode);
+
+                if (wontClick) {
+                    return;
+                }
+
+                if (itemCode != '') {
+                    productArray.push(itemCode);
+                }
+
+                //动态加载分类
+                getAsynData("SortProduct", key, function (json) {
+                    // 移除下一个空的tr
+                    $(tr).next("tr").remove();
+
+                    if (currentNode != 1)
+                        currentNode = tr.attr("id");
+
+                    var row = addRecursionChild(json.Data, currentNode);
+                    //alert(currentNode);
+                    //不是一级目录，应该是插入下个tr 而不是append在队尾  tr.attr("id")
+                    if (currentNode == 1) {
+                        tr.parent().append(row);
+                    }
+                    else {
+                        $(row).insertAfter(tr);
+                    }
+                    $("tr").each(function () {
+                        productListTrEvent($(this));
+                    });
+
+                    $('.tree').treegrid();  //初始化。即原有的展开事件又被清空了-*************randy
+                    //1 所有的expander 点击一下 除去本身的。 2 再更改全部click事件  除去已在array 列表的
+                    //重置新加入节点的click事件  其他不变
+                    LoadShrinkNResetEvent($(this));
+
+
+                });
+
             });
+        }
+
+        function LoadShrinkNResetEvent(spanElement) {
+
+            $("span.treegrid-expander").each(function () {
+                var span = $(this);
+                var itemCode = $(this).siblings("span[name]").html();
+                var parentCode = $(this).parent().parent().siblings("tr.treegrid-1").children().children("span[name]").html();
+            
+
+                for (var i = 0; i < expanderArray.length; i++) {
+
+                    if (expanderArray[i] != itemCode) {
+                        $(span).click();  //初始化是张开的， 如果点击了就点多下不张开
+                        break;
+                    }
+
+                }
+
+                //if (parentCode == undefined) {
+                //    $(this).parent().parent().siblings("tr.treegrid-1").children().children("span.treegrid-expander glyphicon-plus glyphicon").click();
+
+                //}
+
+                //console.log(ff);
+                resetClick($(this));
+            });
+        }
+
+        function shrinkNodes(isFirst) {
+            $("span.treegrid-expander").each(function () {
+
+                var itemCode = $(this).siblings("span[name]").html();
+
+                // 收缩node
+                $(this).click(function () { });
+                if (isFirst)
+                    $(this).click();
+              
+                resetClick($(this));
+            });
+
+        }
+
+        function addOrRemoveElementFromArray(item, parentCode) {
+            //alert(parentNode+","+parentCode);
+            var length = expanderArray.length;
+
+            if (length <= 0) {
+                expanderArray.push(item);
+                return;
+            }
+
+            for (var i = 0; i < length; i++) {
+
+                if (expanderArray[i] == item) {
+                    expanderArray.splice(i, 1);
+                } else {
+                    expanderArray.push(item);
+                }
+
+
+            }
 
         }
 

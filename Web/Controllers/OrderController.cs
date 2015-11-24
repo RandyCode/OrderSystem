@@ -227,9 +227,10 @@ namespace OrderManager.Web
                 Response.Write(ex.ToString());
             }
         }
+
         public ViewResult ProductList(string cardCode)
         {
-            var list = UserService.GetProductList(Cipher, cardCode, "", 0);
+            var list = UserService.GetProductList(Cipher, cardCode, "", 0,5,false);
             var count = UserService.GetProductListCount(Cipher, cardCode, "");
             CardCode = cardCode;
             ViewBag.PageSize = 5;
@@ -243,7 +244,16 @@ namespace OrderManager.Web
         public JsonResult ProductList(string key, int? pageindex)
         {
 
-            var list = UserService.GetProductList(Cipher, CardCode, key, (int)pageindex);
+            var list = UserService.GetProductList(Cipher, CardCode, key, (int)pageindex,5,false);
+
+            return Json(new OrderManager.Web.Models.JsonModel { Data = list });
+        }
+
+
+        [HttpPost]
+        public JsonResult SortProduct(string itemCode)
+        {
+            var list = UserService.GetProductList(Cipher, CardCode, itemCode, 0, int.MaxValue,true);
 
             return Json(new OrderManager.Web.Models.JsonModel { Data = list });
         }

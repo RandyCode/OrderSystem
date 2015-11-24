@@ -57,6 +57,12 @@ namespace Web.Services.UserService {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IUserService/SaveMessageBoard", ReplyAction="http://tempuri.org/IUserService/SaveMessageBoardResponse")]
         System.Threading.Tasks.Task<bool> SaveMessageBoardAsync(string cipher, OrderManager.Model.Models.OM_MessageBoard msgBoard);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IUserService/LoadProductSorts", ReplyAction="http://tempuri.org/IUserService/LoadProductSortsResponse")]
+        System.Collections.Generic.List<OrderManager.Model.DTO.OM_ProductInfo> LoadProductSorts(string cipher, string parentCode);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IUserService/LoadProductSorts", ReplyAction="http://tempuri.org/IUserService/LoadProductSortsResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<OrderManager.Model.DTO.OM_ProductInfo>> LoadProductSortsAsync(string cipher, string parentCode);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IUserService/GetCurrentUserMessageBoard", ReplyAction="http://tempuri.org/IUserService/GetCurrentUserMessageBoardResponse")]
         System.Collections.Generic.List<OrderManager.Model.Models.OM_MessageBoard> GetCurrentUserMessageBoard(string cipher, string userId);
         
@@ -112,10 +118,10 @@ namespace Web.Services.UserService {
         System.Threading.Tasks.Task<System.Collections.Generic.List<OrderManager.Model.Models.OM_User>> GetCurrentUserByCardCodeAsync(string cipher, string userGuid);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IUserService/GetProductList", ReplyAction="http://tempuri.org/IUserService/GetProductListResponse")]
-        System.Collections.Generic.List<OrderManager.Model.DTO.OM_ProductInfo> GetProductList(string cipher, string CardCode, string searchKey, int pageIndex);
+        System.Collections.Generic.List<OrderManager.Model.DTO.OM_ProductInfo> GetProductList(string cipher, string CardCode, string searchKey, int pageIndex, int pageSize, bool isLoad);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IUserService/GetProductList", ReplyAction="http://tempuri.org/IUserService/GetProductListResponse")]
-        System.Threading.Tasks.Task<System.Collections.Generic.List<OrderManager.Model.DTO.OM_ProductInfo>> GetProductListAsync(string cipher, string CardCode, string searchKey, int pageIndex);
+        System.Threading.Tasks.Task<System.Collections.Generic.List<OrderManager.Model.DTO.OM_ProductInfo>> GetProductListAsync(string cipher, string CardCode, string searchKey, int pageIndex, int pageSize, bool isLoad);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IUserService/GetProductListCount", ReplyAction="http://tempuri.org/IUserService/GetProductListCountResponse")]
         int GetProductListCount(string cipher, string CardCode, string searchKey);
@@ -219,6 +225,14 @@ namespace Web.Services.UserService {
             return base.Channel.SaveMessageBoardAsync(cipher, msgBoard);
         }
         
+        public System.Collections.Generic.List<OrderManager.Model.DTO.OM_ProductInfo> LoadProductSorts(string cipher, string parentCode) {
+            return base.Channel.LoadProductSorts(cipher, parentCode);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<OrderManager.Model.DTO.OM_ProductInfo>> LoadProductSortsAsync(string cipher, string parentCode) {
+            return base.Channel.LoadProductSortsAsync(cipher, parentCode);
+        }
+        
         public System.Collections.Generic.List<OrderManager.Model.Models.OM_MessageBoard> GetCurrentUserMessageBoard(string cipher, string userId) {
             return base.Channel.GetCurrentUserMessageBoard(cipher, userId);
         }
@@ -291,12 +305,12 @@ namespace Web.Services.UserService {
             return base.Channel.GetCurrentUserByCardCodeAsync(cipher, userGuid);
         }
         
-        public System.Collections.Generic.List<OrderManager.Model.DTO.OM_ProductInfo> GetProductList(string cipher, string CardCode, string searchKey, int pageIndex) {
-            return base.Channel.GetProductList(cipher, CardCode, searchKey, pageIndex);
+        public System.Collections.Generic.List<OrderManager.Model.DTO.OM_ProductInfo> GetProductList(string cipher, string CardCode, string searchKey, int pageIndex, int pageSize, bool isLoad) {
+            return base.Channel.GetProductList(cipher, CardCode, searchKey, pageIndex, pageSize, isLoad);
         }
         
-        public System.Threading.Tasks.Task<System.Collections.Generic.List<OrderManager.Model.DTO.OM_ProductInfo>> GetProductListAsync(string cipher, string CardCode, string searchKey, int pageIndex) {
-            return base.Channel.GetProductListAsync(cipher, CardCode, searchKey, pageIndex);
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<OrderManager.Model.DTO.OM_ProductInfo>> GetProductListAsync(string cipher, string CardCode, string searchKey, int pageIndex, int pageSize, bool isLoad) {
+            return base.Channel.GetProductListAsync(cipher, CardCode, searchKey, pageIndex, pageSize, isLoad);
         }
         
         public int GetProductListCount(string cipher, string CardCode, string searchKey) {

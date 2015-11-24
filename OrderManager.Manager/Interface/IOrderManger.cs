@@ -96,6 +96,8 @@ namespace OrderManager.Manager
         OM_B1InfomationDTO UpdateSalesOrderStatusByToSAP(string orderGuid);
 
         List<OM_ProductInfo> GetChildProductRecursion(string cardCode, string itemCode, string userGuid);
+
+        bool HasChildProduct(string cardCode, string itemCode);
         #endregion
 
     }

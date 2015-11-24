@@ -496,13 +496,24 @@ namespace OrderManager.Manager
         }
 
 
+        public bool HasChildProduct(string cardCode, string itemCode)
+        {
+            var result = DbRepository.GetList<OM_Product>(a => a.CardCode == cardCode && a.ParentId == itemCode && a.ParentId != a.ItemCode && a.IsDel == false);
+
+            if (result == null || result.Count == 0)
+            {
+                return false;
+            }
+            else
+                return true;
+        }
 
 
         public List<OM_ProductInfo> GetChildProductRecursion(string cardCode, string itemCode, string userGuid)
         {
             //&& a.ParentId!=a.ItemCode 把自己排除
             var result = DbRepository.GetList<OM_Product>(a => a.CardCode == cardCode && a.ParentId == itemCode && a.ParentId != a.ItemCode && a.IsDel == false);
-
+         
             if (result == null || result.Count == 0)
             {
                 return null;
@@ -528,6 +539,8 @@ namespace OrderManager.Manager
                     product.ItemCode = item.ItemCode;
                     product.ItemName = item.ItemName;
                     product.ChildNode = nodes;
+                    if (nodes != null)
+                        product.HasChildNode = true;
                     infos.Add(product);
 
                 }

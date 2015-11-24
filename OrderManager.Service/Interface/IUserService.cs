@@ -36,6 +36,9 @@ namespace OrderManager.Service
         bool SaveMessageBoard(string cipher, OM_MessageBoard msgBoard);
 
         [OperationContract]
+        IList<OM_ProductInfo> LoadProductSorts(string cipher,string parentCode = null);
+
+        [OperationContract]
         List<OM_MessageBoard> GetCurrentUserMessageBoard(string cipher, string userId);
 
         [OperationContract]
@@ -63,7 +66,8 @@ namespace OrderManager.Service
         List<OM_User> GetCurrentUserByCardCode(string cipher, string userGuid);
 
         [OperationContract]
-        IList<OM_ProductInfo> GetProductList(string cipher, string CardCode, string searchKey, int pageIndex);  //IList<OM_ProductInfo>
+        IList<OM_ProductInfo> GetProductList(string cipher, string CardCode, string searchKey, int pageIndex,int pageSize,bool isLoad=false);  
+
         [OperationContract]
         int GetProductListCount(string cipher, string CardCode, string searchKey);
 
